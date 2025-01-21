@@ -1,67 +1,23 @@
 def is_win(game):
-    win = False
-    # Check rows
-    if game[0][0] == game[0][1] == game[0][2] and (game[0][0] == 'X' or game[0][0] == 'O'):
-        win = True
-    if game[1][0] == game[1][1] == game[1][2] and (game[1][0] == 'X' or game[1][0] == 'O'):
-        win = True
-    if game[2][0] == game[2][1] == game[2][2] and (game[2][0] == 'X' or game[2][0] == 'O'):
-        win = True
-    # Check columns
-    if game[0][0] == game[1][0] == game[2][0] and (game[0][0] == 'X' or game[0][0] == 'O'):
-        win = True
-    if game[0][1] == game[1][1] == game[2][1] and (game[0][1] == 'X' or game[0][1] == 'O'):
-        win = True
-    if game[0][2] == game[1][2] == game[2][2] and (game[0][2] == 'X' or game[0][2] == 'O'):
-        win = True
-    # Check diagonals
-    if game[0][0] == game[1][1] == game[2][2] and (game[0][0] == 'X' or game[0][0] == 'O'):
-        win = True
-    if game[0][2] == game[1][1] == game[2][0] and (game[0][2] == 'X' or game[0][2] == 'O'):
-        win = True
-    return win
+    # Check rows and columns for a win
+    for i in range(3):
+        if game[i][0] == game[i][1] == game[i][2] != ' ':
+            return True
+        if game[0][i] == game[1][i] == game[2][i] != ' ':
+            return True
+    
+    # Check diagonals for a win
+    if game[0][0] == game[1][1] == game[2][2] != ' ':
+        return True
+    if game[0][2] == game[1][1] == game[2][0] != ' ':
+        return True
+    
+    return False
 
 def print_board(game):
-    """
-    Print the game board without colors for terminals that don't support ANSI
-    Args:
-        game: 3x3 list representing the game board
-    """
-    board_template = """
-         1   2   3  
-       ┌───┬───┬───┐
-    1  │ {} │ {} │ {} │
-       ├───┼───┼───┤
-    2  │ {} │ {} │ {} │
-       ├───┼───┼───┤
-    3  │ {} │ {} │ {} │
-       └───┴───┴───┘
-    """
-    
-    # Flatten the game board into a single list
-    pieces = [cell for row in game for cell in row]
-    
-    # Print the formatted board
-    print(board_template.format(*pieces))
+    for row in game:
+        print(" ".join(row))
 
-def get_valid_input(game):
-    """
-    Get valid user input for the cell (i, j), ensuring it's within bounds and not already marked.
-    """
-    while True:
-        try:
-            i, j = map(int, input("Enter row and column (1-3) separated by space: ").split())
-            i -= 1  # Convert to 0-based index
-            j -= 1  # Convert to 0-based index
-            if i < 0 or i >= 3 or j < 0 or j >= 3:
-                print("Invalid input! Please enter values between 1 and 3.")
-            elif game[i][j] != ' ':
-                print("Cell already marked! Please choose another cell.")
-            else:
-                return i, j
-        except ValueError:
-            print("Invalid input! Please enter two numbers separated by a space.")
-            
 def main():
     game = [[' ' for _ in range(3)] for _ in range(3)]  # Tic-tac-toe board
     player1 = 'X'
@@ -71,16 +27,26 @@ def main():
     print("O = Player 2")
     
     for n in range(9):
-        turn = not turn  # Switch turns
         print_board(game)  # Print the board before each move
         
         if not turn:
-            print("Player 1's turn")
+            print("Player 1's turn: ", end="")
         else:
-            print("Player 2's turn")
+            print("Player 2's turn: ", end="")
         
-        i, j = get_valid_input(game)  # Get valid input
+        while True:
+            try:
+                i, j = map(int, input("Which cell to mark? i:[1..3], j:[1..3]: ").split())
+                i -= 1
+                j -= 1
+                if 0 <= i < 3 and 0 <= j < 3 and game[i][j] == ' ':
+                    break  # Valid move
+                else:
+                    print("Invalid move, try again.")
+            except (ValueError, IndexError):
+                print("Invalid input, please enter two integers between 1 and 3.")
         
+        # Update the board
         if not turn:
             game[i][j] = 'X'
         else:
@@ -88,12 +54,14 @@ def main():
         
         if is_win(game):
             print_board(game)  # Show final board state
-            print("Win!")
+            print(f"Player {'1' if not turn else '2'} wins!")
             break  # Terminate the game
         
         if n == 8:  # All cells have been filled
             print_board(game)  # Show final board state
             print("Tie!")
+        
+        turn = not turn  # Switch turns
 
 if __name__ == "__main__":
     main()
