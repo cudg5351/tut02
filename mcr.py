@@ -22,13 +22,27 @@ def is_win(game):
     return win
 
 def print_board(game):
-    """Print the game board in a more visually appealing way"""
-    print("\nCurrent board:")
-    print("  1 2 3")  # Column numbers
-    for i, row in enumerate(game, 1):
-        print(f"{i} {row[0]}|{row[1]}|{row[2]}")  # Row numbers and cells
-        if i < 3:  # Don't print the separator line after the last row
-            print("  -+-+-")
+    """
+    Print the game board without colors for terminals that don't support ANSI
+    Args:
+        game: 3x3 list representing the game board
+    """
+    board_template = """
+         1   2   3  
+       ┌───┬───┬───┐
+    1  │ {} │ {} │ {} │
+       ├───┼───┼───┤
+    2  │ {} │ {} │ {} │
+       ├───┼───┼───┤
+    3  │ {} │ {} │ {} │
+       └───┴───┴───┘
+    """
+    
+    # Flatten the game board into a single list
+    pieces = [cell for row in game for cell in row]
+    
+    # Print the formatted board
+    print(board_template.format(*pieces))
 
 def main():
     game = [[' ' for _ in range(3)] for _ in range(3)]  # Tic-tac-toe board
