@@ -44,6 +44,24 @@ def print_board(game):
     # Print the formatted board
     print(board_template.format(*pieces))
 
+def get_valid_input(game):
+    """
+    Get valid user input for the cell (i, j), ensuring it's within bounds and not already marked.
+    """
+    while True:
+        try:
+            i, j = map(int, input("Enter row and column (1-3) separated by space: ").split())
+            i -= 1  # Convert to 0-based index
+            j -= 1  # Convert to 0-based index
+            if i < 0 or i >= 3 or j < 0 or j >= 3:
+                print("Invalid input! Please enter values between 1 and 3.")
+            elif game[i][j] != ' ':
+                print("Cell already marked! Please choose another cell.")
+            else:
+                return i, j
+        except ValueError:
+            print("Invalid input! Please enter two numbers separated by a space.")
+            
 def main():
     game = [[' ' for _ in range(3)] for _ in range(3)]  # Tic-tac-toe board
     player1 = 'X'
@@ -51,25 +69,28 @@ def main():
     turn = False  # False for player 1's turn, True for player 2's turn. Player 1 first.
     print("X = Player 1")
     print("O = Player 2")
+    
     for n in range(9):
         turn = not turn  # Switch turns
         print_board(game)  # Print the board before each move
+        
         if not turn:
-            print("Player 1: ", end="")
+            print("Player 1's turn")
         else:
-            print("Player 2: ", end="")
-        print("Which cell to mark? i:[1..3], j:[1..3]: ")
-        i, j = map(int, input().split())
-        i -= 1
-        j -= 1
+            print("Player 2's turn")
+        
+        i, j = get_valid_input(game)  # Get valid input
+        
         if not turn:
             game[i][j] = 'X'
         else:
             game[i][j] = 'O'
+        
         if is_win(game):
             print_board(game)  # Show final board state
             print("Win!")
             break  # Terminate the game
+        
         if n == 8:  # All cells have been filled
             print_board(game)  # Show final board state
             print("Tie!")
