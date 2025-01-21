@@ -21,6 +21,29 @@ def is_win(game):
         win = True
     return win
 
+def print_board(game):
+    """
+    Print the game board without colors for terminals that don't support ANSI
+    Args:
+        game: 3x3 list representing the game board
+    """
+    board_template = """
+         1   2   3  
+       ┌───┬───┬───┐
+    1  │ {} │ {} │ {} │
+       ├───┼───┼───┤
+    2  │ {} │ {} │ {} │
+       ├───┼───┼───┤
+    3  │ {} │ {} │ {} │
+       └───┴───┴───┘
+    """
+    
+    # Flatten the game board into a single list
+    pieces = [cell for row in game for cell in row]
+    
+    # Print the formatted board
+    print(board_template.format(*pieces))
+
 def main():
     game = [[' ' for _ in range(3)] for _ in range(3)]  # Tic-tac-toe board
     player1 = 'X'
@@ -30,6 +53,7 @@ def main():
     print("O = Player 2")
     for n in range(9):
         turn = not turn  # Switch turns
+        print_board(game)  # Print the board before each move
         if not turn:
             print("Player 1: ", end="")
         else:
@@ -43,13 +67,12 @@ def main():
         else:
             game[i][j] = 'O'
         if is_win(game):
+            print_board(game)  # Show final board state
             print("Win!")
             break  # Terminate the game
         if n == 8:  # All cells have been filled
+            print_board(game)  # Show final board state
             print("Tie!")
-        # Show the game board
-        for row in game:
-            print(" ".join(row))
 
 if __name__ == "__main__":
     main()
