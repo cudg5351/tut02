@@ -21,6 +21,15 @@ def is_win(game):
         win = True
     return win
 
+def print_board(game):
+    """Print the game board in a more visually appealing way"""
+    print("\nCurrent board:")
+    print("  1 2 3")  # Column numbers
+    for i, row in enumerate(game, 1):
+        print(f"{i} {row[0]}|{row[1]}|{row[2]}")  # Row numbers and cells
+        if i < 3:  # Don't print the separator line after the last row
+            print("  -+-+-")
+
 def main():
     game = [[' ' for _ in range(3)] for _ in range(3)]  # Tic-tac-toe board
     player1 = 'X'
@@ -30,6 +39,7 @@ def main():
     print("O = Player 2")
     for n in range(9):
         turn = not turn  # Switch turns
+        print_board(game)  # Print the board before each move
         if not turn:
             print("Player 1: ", end="")
         else:
@@ -43,13 +53,12 @@ def main():
         else:
             game[i][j] = 'O'
         if is_win(game):
+            print_board(game)  # Show final board state
             print("Win!")
             break  # Terminate the game
         if n == 8:  # All cells have been filled
+            print_board(game)  # Show final board state
             print("Tie!")
-        # Show the game board
-        for row in game:
-            print(" ".join(row))
 
 if __name__ == "__main__":
     main()
