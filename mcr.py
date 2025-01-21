@@ -41,7 +41,6 @@ def print_board(game):
     # Flatten the game board into a single list
     pieces = [cell for row in game for cell in row]
     
-    # Print the formatted board
     print(board_template.format(*pieces))
 
 def get_valid_input(game):
